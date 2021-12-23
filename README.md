@@ -3,7 +3,6 @@
 [![Current Release](https://img.shields.io/github/release/psi-4ward/keepalived-hcloud.svg)](https://github.com/psi-4ward/keepalived-hcloud/releases)
 [![Github Stars](https://img.shields.io/github/stars/psi-4ward/keepalived-hcloud.svg?style=social&label=Star)](https://github.com/psi-4ward/keepalived-hcloud)
 [![Docker Stars](https://img.shields.io/docker/stars/psitrax/keepalived-hcloud.svg)](https://hub.docker.com/r/psitrax/keepalived-hcloud/)
-
 [![Publish Docker image](https://github.com/psi-4ward/keepalived-hcloud/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/psi-4ward/keepalived-hcloud/actions/workflows/docker-publish.yml)
 
 Docker image to run keepalived to failover Floating-IPs (of Hetzner Cloud).
