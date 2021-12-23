@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: keepalived
+  namespace: kube-ingress
+  labels:
+    config-version: "v1"
+spec:
+  hostNetwork: true
+  containers:
+    - name: keepalived
+      image: psitrax/hcloud-keepalived:latest
+      imagePullPolicy: Always
+      env:
+        - name: HCLOUD_TOKEN
+          value: <my-token> # Replace with your HCLOUD token (or better use a secret)
+      volumeMounts:
+        - mountPath: /etc/keepalived
+          name: keepalived-conf
+  volumes:
+    # Host-volume with keepalived.conf and "enabled" file
+    - name: keepalived-conf
+      hostPath:
+        path: /opt/keepalived
