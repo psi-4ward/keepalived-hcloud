@@ -30,4 +30,4 @@ EXPOSE 9165
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-CMD ["keepalived", "-l", "-n", "-D", "-f", "/etc/keepalived/keepalived.conf"]
+CMD ["keepalived", "--log-console", "--dont-fork", "--use-file", "/etc/keepalived/keepalived.conf"]
