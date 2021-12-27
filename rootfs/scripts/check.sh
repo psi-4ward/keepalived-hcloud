@@ -40,9 +40,21 @@ STATE=$(cat /tmp/keepalive_state_${NAME})
 [ "$STATE" != "MASTER" ] && reportOK
 
 
-FLOATING_IP_ID=$(curl -f -sSL -H "Authorization: Bearer ${HCLOUD_TOKEN}" "https://api.hetzner.cloud/v1/floating_ips" | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id")
+FLOATING_IP_ID=$(
+  curl -f -sSL \
+      --retry 2 --retry-delay 1 \
+      -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
+      "https://api.hetzner.cloud/v1/floating_ips" \
+    | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id"
+)
 
-ASSIGNED_IP_IDs=$(curl -f -sSL -H "Authorization: Bearer ${HCLOUD_TOKEN}" "https://api.hetzner.cloud/v1/servers?name=${HOSTNAME}" | jq -r  '.servers[0].public_net.floating_ips | @sh')
+ASSIGNED_IP_IDs=$(
+  curl -f -sSL \
+      --retry 2 --retry-delay 1 \
+      -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
+      "https://api.hetzner.cloud/v1/servers?name=${HOSTNAME}" \
+    | jq -r  '.servers[0].public_net.floating_ips | @sh'
+)
 
 # Check if Floating-IP ID is assigned to this server
 for F_ID in $ASSIGNED_IP_IDs ; do

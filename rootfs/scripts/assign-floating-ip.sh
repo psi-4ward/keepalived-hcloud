@@ -21,11 +21,24 @@ if [ -z "${HCLOUD_TOKEN}" ]; then
   exit 1
 fi
 
-SERVER_ID=$(curl -f -sSL -H "Authorization: Bearer ${HCLOUD_TOKEN}" "https://api.hetzner.cloud/v1/servers?name=${HOSTNAME}" | jq .servers[0].id)
+SERVER_ID=$(
+  curl -f -sSL \
+      --retry 2 --retry-delay 1 \
+      -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
+      "https://api.hetzner.cloud/v1/servers?name=${HOSTNAME}" \
+    | jq .servers[0].id
+)
 
-FLOATING_IP_ID=$(curl -f -sSL -H "Authorization: Bearer ${HCLOUD_TOKEN}" "https://api.hetzner.cloud/v1/floating_ips" | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id")
+FLOATING_IP_ID=$(
+  curl -f -sSL \
+      --retry 2 --retry-delay 1 \
+      -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
+      "https://api.hetzner.cloud/v1/floating_ips" \
+    | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id"
+)
 
 curl -f -X POST \
+  --retry 2 --retry-delay 1 \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
   -d "{ \"server\": ${SERVER_ID} }" \
