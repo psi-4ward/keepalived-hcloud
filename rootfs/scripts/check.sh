@@ -40,14 +40,19 @@ source /etc/keepalived/enabled
 
 STATE=$(cat /tmp/keepalive_state_${NAME})
 
-FLOATING_IP_ID=$(
-  (curl -f -sSL \
-      --retry 2 --retry-delay 1 \
-      -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
-      "https://api.hetzner.cloud/v1/floating_ips" \
-    | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id") \
-    2> >(tee -a /tmp/keepalived_notify.err >&2)
-)
+if [ -e /tmp/${FLOATING_IP}_ID ]; then
+  FLOATING_IP_ID=$(cat /tmp/${FLOATING_IP}_ID)
+else
+  FLOATING_IP_ID=$(
+    (curl -f -sSL \
+        --retry 2 --retry-delay 1 \
+        -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
+        "https://api.hetzner.cloud/v1/floating_ips" \
+      | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id") \
+      2> >(tee -a /tmp/keepalived_notify.err >&2)
+  )
+  echo $FLOATING_IP_ID > /tmp/${FLOATING_IP}_ID
+fi
 
 ASSIGNED_IP_IDs=$(
   (curl -f -sSL \
