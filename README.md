@@ -36,3 +36,7 @@ information are available to auto-generate the keepalived config:
 * Generate a keepalived.conf using this information for each Floating-IP
   * Treat the node as _MASTER_ when `serverIps.indexOf(serverIp) == floatingIPs.indexOf(floatingIps) % serverIps.length`
   * else as _BACKUP_ with `priority = 100 - serverIps.indexOf(serverIp)`
+
+
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y41SSEJ)
