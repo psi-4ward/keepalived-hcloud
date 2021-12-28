@@ -11,6 +11,10 @@ HOSTNAME=$(hostname)
 
 echo $(date -Iseconds): Start assigning $FLOATING_IP to $HOSTNAME | tee -a /tmp/keepalived_notify.log
 
+if [ -e /etc/keepalived/HCLOUD_TOKEN ]; then
+  HCLOUD_TOKEN=$(cat /etc/keepalived/HCLOUD_TOKEN)
+fi
+
 if [ -z "${FLOATING_IP}" ]; then
   echo "ERROR: First argument of $0 should be the floating-ip." > >(tee -a /tmp/keepalived_notify.err >&2)
   exit 1

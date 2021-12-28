@@ -21,6 +21,10 @@ function reportFAULT() {
   exit 1
 }
 
+if [ -e /etc/keepalived/HCLOUD_TOKEN ]; then
+  HCLOUD_TOKEN=$(cat /etc/keepalived/HCLOUD_TOKEN)
+fi
+
 [ -z "$NAME" ] && reportFAULT "NAME Parameter is empty"
 [ -z "$FLOATING_IP" ] && reportFAULT "FLOATING_IP Parameter is empty"
 [ -z "$HCLOUD_TOKEN" ] && reportFAULT "HCLOUD_TOKEN env-var is empty"
