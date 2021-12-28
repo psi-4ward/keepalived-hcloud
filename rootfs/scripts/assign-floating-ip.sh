@@ -39,7 +39,7 @@ FLOATING_IP_ID=$(
     2> >(tee -a /tmp/keepalived_notify.err >&2)
 )
 
-curl -f -X POST \
+curl -f -sSL -X POST \
     --retry 2 --retry-delay 1 \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
