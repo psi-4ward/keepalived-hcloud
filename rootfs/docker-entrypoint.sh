@@ -8,6 +8,10 @@ if [ "$1" == "keepalived" ] ; then
   (tail -f /tmp/keepalived_notify.log > /dev/stdout)&
   PIDS="$! $PIDS"
 
+  touch /tmp/keepalived_notify.err
+  (tail -f /tmp/keepalived_notify.err > /dev/stderr)&
+  PIDS="$! $PIDS"
+
   # Run keepalived as defined in CMD
   $@ &
   PIDS="$! $PIDS"

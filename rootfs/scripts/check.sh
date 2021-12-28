@@ -17,7 +17,7 @@ function reportOK() {
   exit 0
 }
 function reportFAULT() {
-  echo "Check $NAME with $FLOATING_IP = FAULT: $1"| tee -a /tmp/keepalived_notify.log
+  echo "Check $NAME with $FLOATING_IP = FAULT: $1" > >(tee -a /tmp/keepalived_notify.err >&2)
   exit 1
 }
 
@@ -45,7 +45,8 @@ FLOATING_IP_ID=$(
       --retry 2 --retry-delay 1 \
       -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
       "https://api.hetzner.cloud/v1/floating_ips" \
-    | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id"
+    | jq ".floating_ips[] | select(.ip == \"${FLOATING_IP}\") | .id" \
+    2> >(tee -a /tmp/keepalived_notify.err >&2)
 )
 
 ASSIGNED_IP_IDs=$(
@@ -53,7 +54,8 @@ ASSIGNED_IP_IDs=$(
       --retry 2 --retry-delay 1 \
       -H "Authorization: Bearer ${HCLOUD_TOKEN}" \
       "https://api.hetzner.cloud/v1/servers?name=${HOSTNAME}" \
-    | jq -r  '.servers[0].public_net.floating_ips | @sh'
+    | jq -r  '.servers[0].public_net.floating_ips | @sh' \
+    2> >(tee -a /tmp/keepalived_notify.err >&2)
 )
 
 # Check if Floating-IP ID is assigned to this server
