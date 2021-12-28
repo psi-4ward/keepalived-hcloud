@@ -14,11 +14,12 @@ Docker image to run keepalived to failover Floating-IPs (of Hetzner Cloud).
 ## Usage
 
 * Create your [docs/keepalived.conf](keepalived.conf) scripts and mount it to `/etc/keepalived`
-* Run the Container/Pod with `HCLOUD_TOKEN` environment variable
+* Run the Container/Pod with `HCLOUD_TOKEN` environment variable or (better) put the token in `/etc/keepalived/HCLOUD_TOKEN` secrets file.
 
 * Optional: Configure keepalived-exporter using env-vars
   * `DISABLE_EXPORTER=false`: Set `true` to disable the exporter.
   * `EXPORTER_LISTEN_ADDRESS=:9165`: Listen address/port for prometheus exporter. 
+
 
 ## TODO / Idea
 
