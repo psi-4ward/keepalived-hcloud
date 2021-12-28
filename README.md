@@ -9,7 +9,7 @@ Docker image to run keepalived to failover Floating-IPs (of Hetzner Cloud).
 
 * Includes helper scripts to check and handle Floating-IPs
 * Includes [prometheus exporter](https://github.com/cafebazaar/keepalived-exporter) (Port 9165)
-* Redirects script-outputs to stdout
+* Redirects script-outputs to stdout/stderr
 
 ## Usage
 

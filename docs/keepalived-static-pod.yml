@@ -3,22 +3,31 @@ kind: Pod
 metadata:
   name: keepalived
   namespace: kube-ingress
-  labels:
+  annotations:
     config-version: "v1"
 spec:
   hostNetwork: true
   containers:
     - name: keepalived
-      image: psitrax/hcloud-keepalived:latest
+      image: ghcr.io/psi-4ward/keepalived-hcloud:latest
       imagePullPolicy: Always
       env:
         - name: HCLOUD_TOKEN
-          value: <my-token> # Replace with your HCLOUD token (or better use a secret)
+          # Replace with your HCLOUD token
+          # or better use a secret and mount it to /etc/keepalived/HCLOUD_TOKEN
+          value: <my-token>
       volumeMounts:
+        - name: host-localtime
+          mountPath: /etc/localtime
+          readOnly: true
         - mountPath: /etc/keepalived
           name: keepalived-conf
+          readOnly: true
   volumes:
     # Host-volume with keepalived.conf and "enabled" file
     - name: keepalived-conf
       hostPath:
         path: /opt/keepalived
+    - name: host-localtime
+      hostPath:
+        path: /etc/localtime

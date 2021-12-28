@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: keepalived
+  namespace: kube-ingress
+  annotations:
+    config-hash: "v2"
+spec:
+  hostNetwork: true
+  shareProcessNamespace: true
+  containers:
+    - name: keepalived
+      image: ghcr.io/psi-4ward/keepalived-hcloud:latest
+      imagePullPolicy: Always
+      env:
+        # Use an own container for the exporter
+        - name: DISABLE_EXPORTER
+          value: "true"
+      volumeMounts:
+        - name: host-localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: keepalived-conf
+          mountPath: /etc/keepalived
+          readOnly: true
+        - name: keepalived-pid
+          mountPath: /var/run/keepalived
+        - name: keepalived-data
+          mountPath: /tmp
+      # TBDC: Do your own measurement
+      resources:
+        limits:
+          cpu: "250m"
+          memory: "128Mi"
+        requests:
+          cpu: "100m"
+          memory: "50Mi"
+    - name: keepalived-metrics
+      image: ghcr.io/psi-4ward/keepalived-hcloud:sha-091e18e
+      imagePullPolicy: IfNotPresent
+      command: [ "/keepalived-exporter" ]
+      args:
+        - "--ka.pid-path"
+        - "/var/run/keepalived/keepalived.pid"
+        - "--web.listen-address"
+        - "127.0.0.1:9165"
+      livenessProbe:
+        exec:
+          command: [ "curl", "-sSf", "http://127.0.0.1:9165" ]
+        initialDelaySeconds: 10
+        periodSeconds: 15
+      resources:
+        limits:
+          cpu: "250m"
+          memory: "128Mi"
+        requests:
+          cpu: "100m"
+          memory: "50Mi"
+      volumeMounts:
+        - name: host-localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: keepalived-pid
+          mountPath: /var/run/keepalived
+        - name: keepalived-data
+          mountPath: /tmp
+  volumes:
+    - name: host-localtime
+      hostPath:
+        path: /etc/localtime
+    - name: keepalived-conf
+      hostPath:
+        path: /opt/keepalived
+    # Shared volumes to let prom-exporter signal keepalived
+    - name: keepalived-pid
+      emptyDir: { }
+    - name: keepalived-data
+      emptyDir: { }
