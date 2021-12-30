@@ -1,7 +1,7 @@
 #!/bin/bash
 ###############################################################################
 # Keepalived check script for Hetzner HCloud Floating-IPs
-# Usage: check.sh <vrrp_instance_name> <floating-ip>
+# Usage: check-fip.sh <vrrp_instance_name> <floating-ip>
 #
 # 1. Checks ENABLED state of "enabled" file. Must be 1 to succeed
 # 2. Checks if given Floating-IP is assigned to this node when STATE=MASTER
