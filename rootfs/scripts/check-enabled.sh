@@ -1,8 +1,10 @@
 #!/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source $SCRIPT_DIR/_utils.sh
+
 source /etc/keepalived/enabled
 
 if [ "$ENABLED" != "1" ] ; then
-  echo "keepalived is disabled by file-flag" > >(tee -a /tmp/keepalived_notify.err >&2)
-  exit 1
+  reportFAULT "Keepalived is disabled by file-flag"
 fi

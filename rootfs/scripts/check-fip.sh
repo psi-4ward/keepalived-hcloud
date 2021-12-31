@@ -10,24 +10,19 @@
 
 set -e -o pipefail
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source $SCRIPT_DIR/_utils.sh
+
 NAME=$1
 FLOATING_IP=$2
-
-function reportOK() {
-  exit 0
-}
-function reportFAULT() {
-  echo "Check $NAME with $FLOATING_IP = FAULT: $1" > >(tee -a /tmp/keepalived_notify.err >&2)
-  exit 1
-}
 
 if [ -e /etc/keepalived/HCLOUD_TOKEN ]; then
   HCLOUD_TOKEN=$(cat /etc/keepalived/HCLOUD_TOKEN)
 fi
 
-[ -z "$NAME" ] && reportFAULT "NAME Parameter is empty"
-[ -z "$FLOATING_IP" ] && reportFAULT "FLOATING_IP Parameter is empty"
-[ -z "$HCLOUD_TOKEN" ] && reportFAULT "HCLOUD_TOKEN is empty"
+[ -z "$NAME" ] && reportFAULT "Error in $0: NAME Parameter is empty"
+[ -z "$FLOATING_IP" ] && reportFAULT "Error in $0: FLOATING_IP Parameter is empty"
+[ -z "$HCLOUD_TOKEN" ] && reportFAULT "Error in $0: HCLOUD_TOKEN is empty"
 
 # Check Floating-IP assignment
 
@@ -67,4 +62,4 @@ for F_ID in $ASSIGNED_IP_IDs ; do
   [ "$FLOATING_IP_ID" -eq "$F_ID" ] && reportOK
 done
 
-reportFAULT "Floating-IP not assigned to this node"
+reportFAULT "Floating-IP $FLOATING_IP is not assigned to this node"

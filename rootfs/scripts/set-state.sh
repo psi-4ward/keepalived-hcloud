@@ -4,6 +4,9 @@
 # Usage: set-state.sh <type> <vrrp_instance_name> <state>
 ###############################################################################
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source $SCRIPT_DIR/_utils.sh
+
 # $1 = “GROUP” or “INSTANCE”
 # $2 = name of group or instance
 # $3 = target state of transition (“MASTER”, “BACKUP”, “FAULT”)
@@ -13,4 +16,4 @@ NAME=$2
 STATE=$3
 
 echo $STATE > /tmp/keepalive_state_${NAME}
-echo $(date -Iseconds): State $NAME=$STATE | tee -a /tmp/keepalived_notify.log
+report Keepalived state changed: $NAME=$STATE

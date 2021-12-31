@@ -6,10 +6,13 @@
 
 set -e -o pipefail
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source $SCRIPT_DIR/_utils.sh
+
 FLOATING_IP="$1"
 HOSTNAME=$(hostname)
 
-echo $(date -Iseconds): Start assigning $FLOATING_IP to $HOSTNAME | tee -a /tmp/keepalived_notify.log
+report "Start assigning $FLOATING_IP to $HOSTNAME"
 
 if [ -e /etc/keepalived/HCLOUD_TOKEN ]; then
   HCLOUD_TOKEN=$(cat /etc/keepalived/HCLOUD_TOKEN)
@@ -61,4 +64,4 @@ fi
     "https://api.hetzner.cloud/v1/floating_ips/${FLOATING_IP_ID}/actions/assign") \
   2> >(tee -a /tmp/keepalived_notify.err >&2)
 
-echo $(date -Iseconds): Assigned $FLOATING_IP to $HOSTNAME | tee -a /tmp/keepalived_notify.log
+report "Assigned $FLOATING_IP to $HOSTNAME"
