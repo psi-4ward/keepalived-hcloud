@@ -16,3 +16,10 @@ function reportFAULT() {
   fi
   exit 1
 }
+
+function hcloud_curl() {
+  (
+    curl -f -sSL --retry 2 --retry-delay 1 -H "Authorization: Bearer ${HCLOUD_TOKEN}" $1 \
+    | jq -r $2
+  ) 2> >(tee -a /tmp/keepalived_notify.err >&2)
+}
