@@ -1,13 +1,18 @@
 # Keepalived for Kubernetes with Hetzner-Cloud scripts
 
 [![Current Release](https://img.shields.io/github/release/psi-4ward/keepalived-hcloud.svg)](https://github.com/psi-4ward/keepalived-hcloud/releases)
-[![Github Stars](https://img.shields.io/github/stars/psi-4ward/keepalived-hcloud.svg?style=social&label=Star)](https://github.com/psi-4ward/keepalived-hcloud)
-[![Docker Stars](https://img.shields.io/docker/stars/psitrax/keepalived-hcloud.svg)](https://hub.docker.com/r/psitrax/keepalived-hcloud/)
-[![Publish Docker image](https://github.com/psi-4ward/keepalived-hcloud/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/psi-4ward/keepalived-hcloud/actions/workflows/docker-publish.yml)
+[![Publish Docker image](https://github.com/psi-4ward/keepalived-hcloud/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/psi-4ward/keepalived-hcloud/pkgs/container/keepalived-hcloud)
+![Docker Pulls](https://img.shields.io/docker/pulls/psitrax/keepalived-hcloud)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/psitrax/keepalived-hcloud)
+![GitHub](https://img.shields.io/github/license/psi-4ward/keepalived-hcloud)
 
-Docker image to run keepalived to failover Floating-IPs (of Hetzner Cloud).
+Docker image for keepalived to failover Floating-IPs (of Hetzner Cloud).
 
 * Includes helper scripts to check and handle Floating-IPs
+  * `assign-floating-ip.sh`: Assigns a Floating-IP to the current Node
+  * `check-fip.sh`: Checks if a Floating-IP is assigned to the current Node
+  * `check-http.sh`: Simple HTTP-Check to validate if the upstream proxy is healthy
+  * `check-enabled.sh`: Script which fails if `ENABLED=0` is defined to manually put Keepalived in FAULT-mode.
 * Includes [prometheus exporter](https://github.com/cafebazaar/keepalived-exporter) (Port 9165)
 * Redirects script-outputs to stdout/stderr
 
@@ -20,23 +25,3 @@ Docker image to run keepalived to failover Floating-IPs (of Hetzner Cloud).
   * `DISABLE_EXPORTER=false`: Set `true` to disable the exporter.
   * `EXPORTER_LISTEN_ADDRESS=:9165`: Listen address/port for prometheus exporter. 
 
-
-## TODO / Idea
-
-TBDC ...
-
-Since the HCloud-Token is known to fetch available Floating-IPs and Servers all required 
-information are available to auto-generate the keepalived config:
-
-* Determine some labels to match hcloud resources
-* Fetch all Floating-IPs (filtered by lables)
-* Fetch all Server(-IPs) (filtered by lables)
-* Find the network-interface wich binds one of public server-IPs
-* Find all configured Floating-IPs on this iface
-* Generate a keepalived.conf using this information for each Floating-IP
-  * Treat the node as _MASTER_ when `serverIps.indexOf(serverIp) == floatingIPs.indexOf(floatingIps) % serverIps.length`
-  * else as _BACKUP_ with `priority = 100 - serverIps.indexOf(serverIp)`
-
-
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y41SSEJ)

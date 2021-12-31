@@ -18,7 +18,7 @@ function reportFAULT() {
 }
 
 function hcloud_curl() {
-  RES=$(curl -fsSL -m 1 --retry 2 --retry-delay 1 -H "Authorization: Bearer ${HCLOUD_TOKEN}" "$1" 2>&1)
+  RES=$(curl -fsSL --retry 2 --retry-delay 1 -H "Authorization: Bearer ${HCLOUD_TOKEN}" "$1" 2>&1)
   [ "$?" -gt 0 ] && reportFAULT "Error requesting $1: $RES"
   echo "$RES" | jq -r "$2"
 }

@@ -53,7 +53,7 @@ ASSIGNED_IP_IDs=$(
 
 # Check if Floating-IP ID is assigned to this server
 for F_ID in $ASSIGNED_IP_IDs ; do
-  [ "$FLOATING_IP_ID" -eq "$F_ID" ] && reportOK
+  [ "$FLOATING_IP_ID" == "$F_ID" ] && reportOK
 done
 
 reportFAULT "Floating-IP $FLOATING_IP is not assigned to this node"
