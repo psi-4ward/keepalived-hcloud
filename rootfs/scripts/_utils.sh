@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function report() {
-  echo $(date -Iseconds): $* | tee -a /tmp/keepalived_notify.log
+  echo "$(date -Iseconds): $*" | tee -a /tmp/keepalived_notify.log
 }
 
 function reportOK() {
@@ -12,14 +12,13 @@ function reportOK() {
 function reportFAULT() {
   # Don't repeat log lines
   if [ "$(tail -n 1 /tmp/keepalived_notify.err)" != "$*" ] ; then
-    echo $* > >(tee -a /tmp/keepalived_notify.err >&2)
+    echo "$*" > >(tee -a /tmp/keepalived_notify.err >&2)
   fi
   exit 1
 }
 
 function hcloud_curl() {
-  (
-    curl -f -sSL --retry 2 --retry-delay 1 -H "Authorization: Bearer ${HCLOUD_TOKEN}" "$1" \
-    | jq -r "$2"
-  ) 2> >(tee -a /tmp/keepalived_notify.err >&2)
+  RES=$(curl -fsSL -m 1 --retry 2 --retry-delay 1 -H "Authorization: Bearer ${HCLOUD_TOKEN}" "$1" 2>&1)
+  [ "$?" -gt 0 ] && reportFAULT "Error requesting $1: $RES"
+  echo "$RES" | jq -r "$2"
 }
