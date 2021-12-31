@@ -12,6 +12,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+        # https://github.com/marketplace/actions/release-changelog-builder
+      - name: Create Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commitMode: true
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -20,6 +30,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: ""
+          body: ${{ steps.github_release.outputs.changelog }}
           draft: false
           prerelease: false
