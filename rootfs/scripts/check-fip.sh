@@ -29,10 +29,6 @@ fi
 [ -z "$FLOATING_IP" ] && reportFAULT "FLOATING_IP Parameter is empty"
 [ -z "$HCLOUD_TOKEN" ] && reportFAULT "HCLOUD_TOKEN is empty"
 
-# Check "enabled"
-source /etc/keepalived/enabled
-[ "$ENABLED" != "1" ] && reportFAULT "keepalived is disabled by file-flag"
-
 # Check Floating-IP assignment
 
 # No state known
